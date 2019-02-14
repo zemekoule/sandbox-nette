@@ -20,7 +20,8 @@
 		"nette/utils": "^2.4",
 		"latte/latte": "^2.4",
 		"tracy/tracy": "^2.4",
-		"nextras/orm": "3.1.0-rc1"
+		"nextras/orm": "3.1.0-rc1",
+		"marc-mabe/php-enum": "^3.1"
 	},
 	"require-dev": {
 		"nette/tester": "^2.0"
