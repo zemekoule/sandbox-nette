@@ -10,6 +10,12 @@ application:
 session:
 	expiration: 14 days
 
+extensions:
+	nextras.dbal: Nextras\Dbal\Bridges\NetteDI\DbalExtension
+	nextras.orm: Nextras\Orm\Bridges\NetteDI\OrmExtension
+
+nextras.orm:
+	model: App\Model\Orm\RepositoryContainer
 
 services:
 	router: App\RouterFactory::createRouter
