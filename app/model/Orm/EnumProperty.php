@@ -12,33 +12,43 @@ class EnumProperty implements IPropertyContainer {
 	/** @var Enum|NULL */
 	private $value;
 
-	/** @var IEntity */
-	private $entity;
-
 	/** @var PropertyMetadata */
 	private $propertyMetadata;
 
 	/** @var string */
 	private $enumClass;
 
-	public function __construct(IEntity $entity, PropertyMetadata $propertyMetadata) {
-		$this->entity = $entity;
+	public function __construct(PropertyMetadata $propertyMetadata) {
 		$this->propertyMetadata = $propertyMetadata;
 		$this->enumClass = key($this->propertyMetadata->types);
 		assert(class_exists($this->enumClass));
 	}
 
-	public function loadValue(array $values) {
+	/**
+	 * @param \Nextras\Orm\Entity\IEntity $entity
+	 * @param array $values
+	 * @internal
+	 */
+	public function loadValue(IEntity $entity, array $values): void {
 		$this->setRawValue($values[$this->propertyMetadata->name]);
 	}
 
 
-	public function saveValue(array $values): array {
+	/**
+	 * @param \Nextras\Orm\Entity\IEntity $entity
+	 * @param array $values
+	 * @internal
+	 * @return array
+	 */
+	public function saveValue(IEntity $entity, array $values): array {
 		$values[$this->propertyMetadata->name] = $this->getRawValue();
 
 		return $values;
 	}
 
+	/**
+	 * @param mixed $value
+	 */
 	public function setRawValue($value) {
 		if($value) {
 			$class = $this->enumClass;
@@ -49,26 +59,60 @@ class EnumProperty implements IPropertyContainer {
 	}
 
 
+	/**
+	 * @return array|bool|float|int|mixed|string|null
+	 */
 	public function getRawValue() {
 		return $this->value ? $this->value->getValue() : null;
 	}
 
 
-	public function &getInjectedValue() {
+	/**
+	 * @param \Nextras\Orm\Entity\IEntity $entity
+	 * @internal
+	 *
+	 * @return \MabeEnum\Enum|mixed|NULL
+	 */
+	public function &getInjectedValue(IEntity $entity) {
 		return $this->value;
 	}
 
 
-	public function hasInjectedValue(): bool {
+	/**
+	 * @param \Nextras\Orm\Entity\IEntity $entity
+	 * @internal
+	 *
+	 * @return bool
+	 */
+	public function hasInjectedValue(IEntity $entity): bool {
 		return $this->value !== null;
 	}
 
 
-	public function setInjectedValue($value) {
+	/**
+	 * @param \Nextras\Orm\Entity\IEntity $entity
+	 * @param mixed $value
+	 * @internal
+	 */
+	public function setInjectedValue(IEntity $entity, $value) {
 		if($this->value !== $value) {
-			$this->entity->setAsModified($this->propertyMetadata->name);
+			$entity->setAsModified($this->propertyMetadata->name);
 		}
 		$this->value = $value;
 	}
 
+	/**
+	 * @internal
+	 *
+	 * @param  \MabeEnum\Enum|null $value
+	 *
+	 * @return string
+	 */
+	public function convertToRawValue($value): ?string {
+		if ($value instanceof $this->enumClass) {
+			return (string) $value;
+		}
+
+		return $value;
+	}
 }

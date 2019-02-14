@@ -20,8 +20,12 @@ class User extends Entity {
 	public function __construct(Email $email, string $name, UserState $state) {
 		parent::__construct();
 
-		$this->setReadOnlyValue('email', $email);
+		$this->setEmail($email);
 		$this->setReadOnlyValue('name', $name);
 		$this->setReadOnlyValue('state', $state);
+	}
+
+	public function setEmail(Email $email) {
+		$this->setReadOnlyValue('email', $email);
 	}
 }

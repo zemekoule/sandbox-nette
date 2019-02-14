@@ -2,6 +2,7 @@
 
 namespace App\Presenters;
 
+use App\Model\Email;
 use Nette;
 
 
@@ -11,7 +12,10 @@ final class HomepagePresenter extends Nette\Application\UI\Presenter
 	public $usersRepository;
 
 	public function renderDefault() {
-		$users = $this->usersRepository->findAll();
-		var_dump($users);
+		$users = $this->usersRepository->findAll()->fetchPairs('id', 'email');
+		dump($users);
+		$user = $this->usersRepository->getById(1);
+		$user->setEmail(new Email('ja@robot.cz'));
+		$this->usersRepository->persistAndFlush($user);
 	}
 }
